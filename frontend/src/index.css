@@ -1,0 +1,15 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0b0f0c;
+    color:white;
+    overflow-x:hidden;
+}
+
+#root{
+    min-height:100vh;
+}
