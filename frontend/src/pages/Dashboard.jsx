@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
   const [time, setTime] = useState("");
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -11,6 +12,25 @@ function Dashboard() {
     }, 1000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.log(err);
+        alert("Camera access denied!");
+      }
+    }
+
+    startCamera();
   }, []);
 
   return (
@@ -88,7 +108,12 @@ function Dashboard() {
           <h2>🎥 Live Camera Feed</h2>
 
           <div className="video">
-            Camera Feed Will Appear Here
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+            ></video>
           </div>
 
         </div>
