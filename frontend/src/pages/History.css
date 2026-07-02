@@ -1,0 +1,102 @@
+.history-layout {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 80vh;
+}
+
+.history-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 15px;
+}
+
+.history-page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.history-filter-panel {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+
+.theme-light .history-filter-panel {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-input, .filter-select {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 13px;
+}
+
+.theme-light .filter-input, .theme-light .filter-select {
+  color: #000;
+  background: #fff;
+}
+
+.filter-select option {
+  background: #060913;
+  color: #fff;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--card-border);
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.theme-light .pagination-btn {
+  color: #000;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: monospace;
+}

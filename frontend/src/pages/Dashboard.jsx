@@ -12,6 +12,10 @@ import DetectionCards from "../components/DetectionCards";
 import Footer from "../components/Footer";
 import Timeline from "../components/Timeline";
 import NotificationPanel from "../components/NotificationPanel";
+import History from "./History";
+import Reports from "./Reports";
+import Cameras from "./Cameras";
+import Settings from "./Settings";
 import { ThemeContext } from "../context/ThemeContext";
 import { useDashboard } from "../hooks/useDashboard";
 import { AnimatePresence, motion } from "framer-motion";
@@ -217,148 +221,53 @@ function Dashboard() {
             </div>
           )}
 
+          {/* Focused Tab Views */}
+          {activeTab === "cameras" && (
+            <div className="dashboard-full-row">
+              <Cameras />
+            </div>
+          )}
+
+          {activeTab === "alerts" && (
+            <div className="dashboard-row-primary" style={{ gridTemplateColumns: "2fr 1fr" }}>
+              <AlertsTable />
+              <StatusCard isEmergencyMode={isEmergencyMode} />
+            </div>
+          )}
+
+          {activeTab === "analytics" && (
+            <div className="dashboard-full-row">
+              <Analytics />
+            </div>
+          )}
+
+          {activeTab === "border-map" && (
+            <div className="dashboard-full-row">
+              <BorderMap isEmergencyMode={isEmergencyMode} />
+            </div>
+          )}
+
+          {activeTab === "ai-detection" && (
+            <div className="dashboard-full-row">
+              <DetectionCards />
+            </div>
+          )}
+
+          {activeTab === "history" && (
+            <div className="dashboard-full-row">
+              <History />
+            </div>
+          )}
+
           {activeTab === "reports" && (
-            <div className="glass-pane" style={{ padding: "30px", minHeight: "500px", display: "flex", flexDirection: "column", gap: "20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--card-border)", paddingBottom: "10px" }}>
-                <h2 style={{ fontSize: "18px", color: "var(--primary)" }}>
-                  Surveillance System Analytics Reports
-                </h2>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <button className="cyber-btn cyber-btn-primary" onClick={handleExportCSV}>
-                    Export CSV Report
-                  </button>
-                  <button className="cyber-btn" onClick={handleExportPDF}>
-                    Export PDF Summary
-                  </button>
-                </div>
-              </div>
-
-              {/* Dynamic Summary Cards inside reports tab */}
-              <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-                <div className="glass-pane" style={{ padding: "16px", borderRadius: "8px" }}>
-                  <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--text-muted)" }}>Total Events Tracked</span>
-                  <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--primary)", marginTop: "4px" }}>
-                    {alerts?.length || 0}
-                  </div>
-                </div>
-                <div className="glass-pane" style={{ padding: "16px", borderRadius: "8px" }}>
-                  <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--text-muted)" }}>Intrusion Accuracy</span>
-                  <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--success)", marginTop: "4px" }}>
-                    98.4%
-                  </div>
-                </div>
-                <div className="glass-pane" style={{ padding: "16px", borderRadius: "8px" }}>
-                  <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--text-muted)" }}>Critical Unresolved Threats</span>
-                  <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--danger)", marginTop: "4px" }}>
-                    {alerts?.filter(a => a.status === "critical").length || 0}
-                  </div>
-                </div>
-              </div>
-
-              <h3 style={{ fontSize: "14px", color: "var(--primary)", marginTop: "10px" }}>
-                Surveillance Radar Live Telemetry Feed
-              </h3>
-              <div style={{
-                flexGrow: 1,
-                background: "#02050b",
-                border: "1px solid var(--card-border)",
-                borderRadius: "8px",
-                padding: "20px",
-                fontFamily: "monospace",
-                fontSize: "12px",
-                color: "#00E5FF",
-                overflowY: "auto",
-                maxHeight: "260px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px"
-              }}>
-                {logs.map((log, idx) => (
-                  <div key={idx} style={{ borderLeft: "2px solid var(--primary)", paddingLeft: "8px" }}>
-                    {log}
-                  </div>
-                ))}
-                <div ref={terminalBottomRef} />
-              </div>
-              <button 
-                className="cyber-btn" 
-                style={{ alignSelf: "flex-end", color: "var(--danger)" }} 
-                onClick={() => setLogs(["[CLEARED] Telemetry logger buffer purged. Listening for new system telemetry..."])}
-              >
-                Clear Log Buffer
-              </button>
+            <div className="dashboard-full-row">
+              <Reports />
             </div>
           )}
 
           {activeTab === "settings" && (
-            <div className="glass-pane" style={{ padding: "30px", minHeight: "450px" }}>
-              <h2 style={{ fontSize: "18px", color: "var(--primary)", borderBottom: "1px solid var(--card-border)", paddingBottom: "10px", marginBottom: "24px" }}>
-                SentinelAI Systems Control Parameter Settings
-              </h2>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "24px", maxWidth: "600px" }}>
-                {/* Confidence Range Slider */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                    <span>AI Model Confidence Filter Threshold</span>
-                    <strong style={{ color: "var(--primary)" }}>{(confidenceThreshold * 100).toFixed(0)}% Match</strong>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="0.5" 
-                    max="0.99" 
-                    step="0.01" 
-                    value={confidenceThreshold}
-                    onChange={(e) => setConfidenceThreshold(parseFloat(e.target.value))}
-                    style={{ accentColor: "var(--primary)", width: "100%", height: "6px", cursor: "pointer" }}
-                  />
-                  <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                    Filters low confidence bounding box classifications out of video/radar streams. Lower settings show more targets but increase false positives.
-                  </span>
-                </div>
-
-                {/* Radar Sensor Radius */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                    <span>Ground Radar Range (Kilometers)</span>
-                    <strong style={{ color: "var(--primary)" }}>{radarRange} KM Range</strong>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="5" 
-                    max="50" 
-                    step="5" 
-                    value={radarRange}
-                    onChange={(e) => setRadarRange(parseInt(e.target.value))}
-                    style={{ accentColor: "var(--primary)", width: "100%", height: "6px", cursor: "pointer" }}
-                  />
-                  <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                    Saves transmitter power by adjusting local seismic telemetry scan radius limit.
-                  </span>
-                </div>
-
-                {/* Alert Sensitivity Dropdown */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <span style={{ fontSize: "14px" }}>Surveillance Alert Trigger Matrix Mode</span>
-                  <select 
-                    value={alertSensitivity} 
-                    onChange={(e) => setAlertSensitivity(e.target.value)}
-                    style={{
-                      padding: "10px 14px",
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid var(--card-border)",
-                      color: "#fff",
-                      borderRadius: "6px",
-                      fontSize: "13px",
-                      cursor: "pointer"
-                    }}
-                  >
-                    <option value="high" style={{ background: "#060913" }}>High (Standard Operational Matrix)</option>
-                    <option value="medium" style={{ background: "#060913" }}>Medium (Low Noise Filter)</option>
-                    <option value="low" style={{ background: "#060913" }}>Low (Defensive Mode Silence)</option>
-                  </select>
-                </div>
-              </div>
+            <div className="dashboard-full-row">
+              <Settings />
             </div>
           )}
         </div>

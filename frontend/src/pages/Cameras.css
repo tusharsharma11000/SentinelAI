@@ -1,0 +1,119 @@
+.cameras-layout {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cameras-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 15px;
+}
+
+.cameras-page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.cameras-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.camera-grid-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.camera-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.camera-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.camera-card-status {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--card-border);
+}
+
+.camera-card-status.active {
+  border-color: var(--success);
+  color: var(--success);
+  background: rgba(0, 210, 106, 0.15);
+}
+
+.camera-card-status.offline {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: rgba(255, 77, 109, 0.15);
+}
+
+.camera-card-mid {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.camera-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.camera-card-val {
+  font-weight: 600;
+  color: #fff;
+  font-family: monospace;
+}
+
+.camera-card-bottom {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.camera-action-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  color: #fff;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.camera-action-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.camera-action-btn.active {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}

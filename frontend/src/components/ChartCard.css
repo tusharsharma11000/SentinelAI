@@ -1,0 +1,32 @@
+.chart-wrapper-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 250px;
+}
+
+.chart-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 10px;
+}
+
+.chart-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chart-card-subtitle {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.chart-card-content {
+  flex-grow: 1;
+  width: 100%;
+}

@@ -22,6 +22,7 @@ const menuItems = [
   { id: "analytics", label: "Analytics", icon: <FiBarChart2 /> },
   { id: "border-map", label: "Border Map", icon: <FiMap /> },
   { id: "ai-detection", label: "AI Detection", icon: <FiCpu /> },
+  { id: "history", label: "History Log", icon: <FiFolder /> },
   { id: "reports", label: "Reports", icon: <FiFolder /> },
   { id: "settings", label: "Settings", icon: <FiSettings /> },
 ];

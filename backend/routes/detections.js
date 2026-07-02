@@ -6,20 +6,10 @@ const Camera = require("../models/Camera");
 
 const authMiddleware = require("../middleware/authMiddleware");
 
+const historyController = require("../controllers/historyController");
+
 // GET /api/detections
-router.get("/", authMiddleware, async (req, res) => {
-  try {
-    const response = await fetch("http://localhost:8000/detections");
-    if (!response.ok) {
-      return res.status(response.status).json({ error: "Failed to fetch detections from AI service" });
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error("AI Service connection error:", error.message);
-    res.status(500).json({ error: "AI service offline" });
-  }
-});
+router.get("/", authMiddleware, historyController.getHistory);
 
 // POST /api/detections/event
 // Received real-time events pushed by Python YOLOv8 engine
