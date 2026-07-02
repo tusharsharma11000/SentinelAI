@@ -18,6 +18,10 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: "Please enter all required commander fields" });
     }
 
+    if (password.length < 6) {
+      return res.status(400).json({ error: "Passcode must be at least 6 characters long" });
+    }
+
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
