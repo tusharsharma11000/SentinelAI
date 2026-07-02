@@ -9,7 +9,8 @@ const DetectionSchema = new mongoose.Schema({
   
   // Optional parameters to support Day 5 tracking layout overlays
   image: { type: String },
-  trackingId: { type: Number }
+  trackingId: { type: Number },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
 });
 
 module.exports = mongoose.model("Detection", DetectionSchema);

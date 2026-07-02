@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { FiSearch, FiBell, FiSun, FiMoon, FiChevronDown, FiUser } from "react-icons/fi";
 import { ThemeContext } from "../context/ThemeContext";
+import { AuthContext } from "../context/AuthContext";
 import { useDashboard } from "../hooks/useDashboard";
 import "./Navbar.css";
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { user, logout } = useContext(AuthContext);
   const { bellCount, resetBell } = useDashboard();
   const [time, setTime] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -80,7 +82,7 @@ function Navbar() {
             onClick={() => setShowProfileMenu(!showProfileMenu)}
           >
             <FiUser className="profile-icon" />
-            <span className="profile-name">Vance.A</span>
+            <span className="profile-name">👤 {user?.name || "Commander"}</span>
             <FiChevronDown style={{ fontSize: "12px", color: "var(--text-muted)" }} />
           </div>
 
@@ -103,16 +105,16 @@ function Navbar() {
               <div 
                 className="menu-item"
                 style={{ padding: "8px 12px", fontSize: "12px" }}
-                onClick={() => { alert("Navigating to Commander Bio..."); setShowProfileMenu(false); }}
+                onClick={() => { alert(`Commander: ${user?.name}\nEmail: ${user?.email}\nAccess Level: ${user?.role.toUpperCase()}`); setShowProfileMenu(false); }}
               >
                 Profile Details
               </div>
               <div 
                 className="menu-item"
-                style={{ padding: "8px 12px", fontSize: "12px" }}
-                onClick={() => { alert("Diagnostics running..."); setShowProfileMenu(false); }}
+                style={{ padding: "8px 12px", fontSize: "12px", color: "var(--danger)", cursor: "pointer" }}
+                onClick={() => { logout(); setShowProfileMenu(false); }}
               >
-                System Integrity
+                Logout Account
               </div>
             </div>
           )}

@@ -43,13 +43,16 @@ const alertsRoute = require("./routes/alerts");
 const reportsRoute = require("./routes/reports");
 const analyticsRoute = require("./routes/analytics");
 const aiRoute = require("./routes/ai");
+const authRoute = require("./routes/authRoutes");
+const authMiddleware = require("./middleware/authMiddleware");
 
-app.use("/api/dashboard", dashboardRoute);
-app.use("/api/camera", camerasRoute);
-app.use("/api/alerts", alertsRoute);
-app.use("/api/reports", reportsRoute);
-app.use("/api/analytics", analyticsRoute);
-app.use("/api/ai", aiRoute);
+app.use("/api/auth", authRoute);
+app.use("/api/dashboard", authMiddleware, dashboardRoute);
+app.use("/api/camera", authMiddleware, camerasRoute);
+app.use("/api/alerts", authMiddleware, alertsRoute);
+app.use("/api/reports", authMiddleware, reportsRoute);
+app.use("/api/analytics", authMiddleware, analyticsRoute);
+app.use("/api/ai", authMiddleware, aiRoute);
 
 app.get("/", (req, res) => {
   res.send("🛡 SentinelAI Backend Running...");

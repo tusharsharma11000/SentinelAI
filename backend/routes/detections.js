@@ -4,8 +4,10 @@ const Detection = require("../models/Detection");
 const Alert = require("../models/Alert");
 const Camera = require("../models/Camera");
 
+const authMiddleware = require("../middleware/authMiddleware");
+
 // GET /api/detections
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     const response = await fetch("http://localhost:8000/detections");
     if (!response.ok) {
@@ -39,6 +41,13 @@ router.post("/event", async (req, res) => {
       alertLevel = "LOW";
     }
 
+    // Retrieve active commander from database (Phase 10 AI Detection Ownership)
+    const User = require("../models/User");
+    let commanderUser = await User.findOne({ role: "commander" });
+    if (!commanderUser) {
+      commanderUser = await User.findOne();
+    }
+
     // 1. Save Detection log to MongoDB matching exact schema
     const detection = await Detection.create({
       object: className,
@@ -47,7 +56,8 @@ router.post("/event", async (req, res) => {
       timestamp: new Date(),
       alertLevel: alertLevel,
       image,
-      trackingId
+      trackingId,
+      userId: commanderUser ? commanderUser._id : null
     });
 
     // 2. Broadcast Detection event via Socket.io
