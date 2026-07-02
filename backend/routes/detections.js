@@ -25,16 +25,29 @@ router.post("/event", async (req, res) => {
   try {
     const { camera, className, confidence, trackingId, location, image, speed, direction, restrictedZoneBreach } = req.body;
 
-    // 1. Save Detection log to MongoDB
+    // Compute Alert Level based on Phase 7 Alert Logic:
+    // - Person with confidence > 90% -> HIGH ALERT
+    // - Person other confidence -> MEDIUM
+    // - Animals (dog, cat, bird, etc.) -> LOW
+    // - Others -> MEDIUM (drones, vehicles, etc.)
+    let alertLevel = "MEDIUM";
+    const lowerClass = className.toLowerCase();
+    
+    if (lowerClass === "person") {
+      alertLevel = confidence > 0.90 ? "HIGH ALERT" : "MEDIUM";
+    } else if (["dog", "cat", "bird", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe"].includes(lowerClass)) {
+      alertLevel = "LOW";
+    }
+
+    // 1. Save Detection log to MongoDB matching exact schema
     const detection = await Detection.create({
-      camera,
-      className,
-      confidence,
-      time: new Date(),
+      object: className,
+      confidence: confidence,
+      camera: camera || "Camera 01",
+      timestamp: new Date(),
+      alertLevel: alertLevel,
       image,
-      trackingId,
-      location,
-      status: "active"
+      trackingId
     });
 
     // 2. Broadcast Detection event via Socket.io

@@ -231,7 +231,7 @@ function LiveCamera() {
         <div className="camera-meta">
           <span className="camera-title">{selectedCam.name}</span>
           <span className="camera-specs">
-            {selectedCam.resolution} | {selectedCam.fps} FPS | {selectedCam.location}
+            {selectedCam.resolution} | {selectedCam.fps} FPS | {selectedCam.location} | {selectedCam.status === "active" ? "🟢 Online" : "🔴 Offline"}
           </span>
         </div>
         <div className="camera-controls">
@@ -241,7 +241,9 @@ function LiveCamera() {
             onChange={(e) => setSelectedCam(cameras.find(c => c._id === e.target.value))}
           >
             {cameras.map(cam => (
-              <option key={cam._id} value={cam._id}>{cam.name}</option>
+              <option key={cam._id} value={cam._id}>
+                {cam.name} {cam.status === "active" ? "🟢 Online" : "🔴 Offline"}
+              </option>
             ))}
           </select>
           <button 

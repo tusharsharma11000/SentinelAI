@@ -93,12 +93,14 @@ export function DashboardProvider({ children }) {
 
     // Handle new object tracks (Detections)
     socket.on("new-detection", (data) => {
-      const timeStamp = new Date(data.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const targetTime = data.timestamp || data.time;
+      const targetObject = data.object || data.className || "Target";
+      const timeStamp = new Date(targetTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       
       const newLog = {
         id: Date.now() + Math.random(),
         time: timeStamp,
-        event: `${data.className.toUpperCase()} detected at ${data.camera} (ID: ${data.trackingId})`,
+        event: `${targetObject.toUpperCase()} detected at ${data.camera} (ID: ${data.trackingId || 0})`,
         type: data.restrictedZoneBreach ? "breach" : "detection"
       };
 

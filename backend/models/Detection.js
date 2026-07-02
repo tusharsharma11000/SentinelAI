@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
 
 const DetectionSchema = new mongoose.Schema({
-  camera: { type: String, required: true }, // e.g., "Sector Alpha-12 (North)"
-  className: { type: String, required: true }, // e.g., "Person", "Drone", "Vehicle"
+  object: { type: String, required: true }, // e.g. "person", "dog", "car"
   confidence: { type: Number, required: true },
-  time: { type: Date, default: Date.now },
-  image: { type: String }, // Base64 snapshot string
-  trackingId: { type: Number, required: true },
-  location: { type: String }, // Coordinates string
-  status: { type: String, enum: ["active", "resolved"], default: "active" }
+  camera: { type: String, required: true }, // e.g. "Camera 01"
+  timestamp: { type: Date, default: Date.now },
+  alertLevel: { type: String, required: true }, // e.g. "HIGH ALERT", "MEDIUM", "LOW"
+  
+  // Optional parameters to support Day 5 tracking layout overlays
+  image: { type: String },
+  trackingId: { type: Number }
 });
 
 module.exports = mongoose.model("Detection", DetectionSchema);
