@@ -12,6 +12,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const detectionsRoute = require("./routes/detections");
+app.use("/api/detections", detectionsRoute);
+
 app.get("/", (req, res) => {
   res.send("🛡 SentinelAI Backend Running...");
 });

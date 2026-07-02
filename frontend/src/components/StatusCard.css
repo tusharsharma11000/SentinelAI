@@ -1,0 +1,152 @@
+.status-card {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 380px;
+  height: 100%;
+}
+
+.status-card-header {
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.status-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-shield-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  gap: 20px;
+}
+
+.shield-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shield-pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid var(--success);
+  opacity: 0.8;
+  animation: shieldPulseRing 2s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+}
+
+.shield-pulse-ring.danger {
+  border-color: var(--danger);
+}
+
+@keyframes shieldPulseRing {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.shield-svg {
+  width: 70px;
+  height: 70px;
+  filter: drop-shadow(0 0 15px var(--success));
+  color: var(--success);
+  z-index: 5;
+}
+
+.shield-svg.danger {
+  filter: drop-shadow(0 0 15px var(--danger));
+  color: var(--danger);
+}
+
+.status-text-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-badge {
+  padding: 6px 20px;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(90deg, var(--success), #34ff9d);
+  box-shadow: 0 0 20px rgba(0, 210, 106, 0.4);
+}
+
+.status-badge.danger {
+  background: linear-gradient(90deg, var(--danger), #ff8497);
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.4);
+}
+
+.status-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* System metrics rows */
+.status-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.metric-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.metric-name {
+  color: var(--text-muted);
+}
+
+.metric-val {
+  color: var(--text-main);
+  font-family: monospace;
+}
+
+.metric-progress-bg {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.theme-light .metric-progress-bg {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.metric-progress-fill {
+  height: 100%;
+  border-radius: 30px;
+}

@@ -1,0 +1,147 @@
+.hero-section {
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(10, 18, 36, 0.45) 0%, rgba(91, 92, 255, 0.08) 100%);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+}
+
+.theme-light .hero-section {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(91, 92, 255, 0.05) 100%);
+}
+
+/* Background Cyber Elements */
+.hero-background-svg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.theme-light .hero-background-svg {
+  opacity: 0.2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 60%;
+}
+
+.hero-subtitle-top {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--primary);
+  letter-spacing: 3px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+}
+
+/* Futuristic Buttons */
+.cyber-btn {
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-btn-primary {
+  background: linear-gradient(90deg, var(--accent), #7d7eff);
+  border: 1px solid var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(91, 92, 255, 0.35);
+}
+
+.cyber-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(91, 92, 255, 0.5);
+  background: linear-gradient(90deg, #7d7eff, var(--accent));
+}
+
+.cyber-btn-danger {
+  background: rgba(255, 77, 109, 0.1);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  box-shadow: 0 0 10px rgba(255, 77, 109, 0.1);
+}
+
+.cyber-btn-danger:hover {
+  background: var(--danger);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+}
+
+/* Scanline Animation overlay inside hero */
+.hero-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, transparent, var(--primary), transparent);
+  opacity: 0.3;
+  animation: scanlineAnimation 6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanlineAnimation {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+
+/* Emergency State Overlay styles */
+.hero-section.emergency-mode {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 25px rgba(255, 77, 109, 0.3) !important;
+  animation: emergencyPulse 1.5s infinite alternate;
+}
+
+@keyframes emergencyPulse {
+  0% {
+    background: linear-gradient(135deg, rgba(255, 77, 109, 0.12) 0%, rgba(10, 18, 36, 0.45) 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, rgba(255, 77, 109, 0.22) 0%, rgba(10, 18, 36, 0.55) 100%);
+  }
+}

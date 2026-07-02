@@ -1,0 +1,119 @@
+.map-card {
+  padding: 24px;
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.map-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.map-wrapper {
+  flex-grow: 1;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+  background: #02050b;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Map Grid elements */
+.map-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(rgba(0, 229, 255, 0.15) 1px, transparent 0),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 0),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 0);
+  background-size: 20px 20px, 40px 40px, 40px 40px;
+  pointer-events: none;
+}
+
+/* Radar Sweep overlay */
+.radar-sweep-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
+  background: conic-gradient(
+    from 0deg,
+    var(--radar-sweep) 0deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+  border-radius: 50%;
+  animation: radarSweep 10s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes radarSweep {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Hotspots */
+.sensor-pin {
+  cursor: pointer;
+  filter: drop-shadow(0 0 6px currentColor);
+  transition: all var(--transition-speed) ease;
+}
+
+.sensor-pin:hover {
+  filter: drop-shadow(0 0 15px currentColor);
+  transform: scale(1.3);
+}
+
+.sensor-pin-pulse {
+  animation: mapPinPulse 1.5s infinite alternate;
+}
+
+@keyframes mapPinPulse {
+  0% { opacity: 0.4; r: 4; }
+  100% { opacity: 1; r: 7; }
+}
+
+/* Connection routes */
+.patrol-route-line {
+  fill: none;
+  stroke: var(--map-route);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.border-fence-line {
+  fill: none;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+/* Drone icon */
+.drone-tracker {
+  filter: drop-shadow(0 0 4px var(--primary));
+}
+
+/* Coordinates overlay */
+.map-coords-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(10, 18, 36, 0.75);
+  border: 1px solid var(--card-border);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 10px;
+  color: var(--text-muted);
+  z-index: 5;
+}

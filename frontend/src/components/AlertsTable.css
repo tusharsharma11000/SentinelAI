@@ -1,0 +1,162 @@
+.alerts-card {
+  padding: 24px;
+  width: 100%;
+}
+
+.alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.alerts-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.alerts-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.theme-light .filter-btn {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.filter-btn:hover {
+  color: var(--text-main);
+  border-color: var(--primary);
+}
+
+.filter-btn.active {
+  background: var(--sidebar-active);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Glass Table Styles */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+}
+
+.cyber-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.cyber-table th {
+  background: rgba(10, 18, 36, 0.8);
+  padding: 14px 16px;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.theme-light .cyber-table th {
+  background: rgba(91, 92, 255, 0.05);
+}
+
+.cyber-table td {
+  padding: 14px 16px;
+  color: var(--text-main);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.theme-light .cyber-table td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.cyber-table tbody tr {
+  transition: all var(--transition-speed) ease;
+}
+
+.cyber-table tbody tr:hover {
+  background: rgba(0, 229, 255, 0.03);
+  transform: scale(1.005);
+}
+
+.theme-light .cyber-table tbody tr:hover {
+  background: rgba(91, 92, 255, 0.03);
+}
+
+/* Threat Badges */
+.threat-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.threat-badge.threat-low {
+  background: rgba(0, 210, 106, 0.15);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.threat-badge.threat-medium {
+  background: rgba(255, 176, 32, 0.15);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+.threat-badge.threat-high {
+  background: rgba(255, 77, 109, 0.15);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+/* Status dots */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-ring {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-ring.status-resolved {
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.status-ring.status-pending {
+  background: var(--warning);
+  box-shadow: 0 0 6px var(--warning);
+}
+
+.status-ring.status-critical {
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
+  animation: alarmFlash 1s infinite alternate;
+}
+
+@keyframes alarmFlash {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}

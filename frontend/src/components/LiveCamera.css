@@ -1,0 +1,213 @@
+.camera-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.camera-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.camera-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.camera-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.camera-specs {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.camera-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.camera-select {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.theme-light .camera-select {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.camera-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px var(--glow-color);
+}
+
+/* Video Canvas Display area */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: #000;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-overlay-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* HUD badges on top of camera */
+.video-hud-badge {
+  position: absolute;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.live-badge {
+  top: 16px;
+  left: 16px;
+  background: rgba(255, 77, 109, 0.2);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.live-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
+  animation: liveDotPulse 1s infinite alternate;
+}
+
+@keyframes liveDotPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.fps-badge {
+  top: 16px;
+  right: 16px;
+  background: rgba(10, 18, 36, 0.6);
+  border: 1px solid var(--card-border);
+  color: var(--primary);
+  font-family: monospace;
+}
+
+/* Quick HUD button overlays */
+.video-action-btns {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 15;
+  display: flex;
+  gap: 8px;
+}
+
+.video-hud-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: rgba(10, 18, 36, 0.6);
+  border: 1px solid var(--card-border);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: all var(--transition-speed) ease;
+}
+
+.video-hud-btn:hover {
+  background: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+/* Carousel Selector */
+.camera-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 0 12px 0;
+  scrollbar-width: thin;
+}
+
+.carousel-item {
+  flex: 0 0 140px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid var(--card-border);
+  transition: all var(--transition-speed) ease;
+}
+
+.carousel-item:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.carousel-item.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--glow-color);
+}
+
+.carousel-thumb-canvas {
+  width: 100%;
+  height: 100%;
+  background: #060913;
+}
+
+.carousel-item-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 4px 8px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

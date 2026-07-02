@@ -1,0 +1,77 @@
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.chart-card {
+  padding: 24px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* SVG Chart Elements */
+.chart-container-svg {
+  width: 100%;
+  height: 160px;
+  overflow: visible;
+}
+
+.grid-line {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-dasharray: 2 2;
+}
+
+.theme-light .grid-line {
+  stroke: rgba(0, 0, 0, 0.05);
+}
+
+.chart-axis-text {
+  font-size: 8px;
+  fill: var(--text-muted);
+  font-family: monospace;
+}
+
+/* Bar Chart styling */
+.bar-chart-rect {
+  transition: height 0.8s ease, y 0.8s ease;
+}
+
+.bar-chart-rect:hover {
+  fill: var(--primary) !important;
+  filter: drop-shadow(0 0 8px var(--primary));
+}
+
+/* Donut Chart Legend */
+.donut-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
