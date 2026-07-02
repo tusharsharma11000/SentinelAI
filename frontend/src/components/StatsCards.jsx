@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiVideo, FiBell, FiAlertCircle, FiTrendingUp } from "react-icons/fi";
+import { useDashboard } from "../hooks/useDashboard";
 import "./StatsCards.css";
 
 // Helper hook for animating counters
@@ -8,7 +9,7 @@ function useCountUp(target, duration = 1000, start = true) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!start) return;
+    if (!start || target === undefined || target === null) return;
     let startTime = null;
 
     const animate = (timestamp) => {
@@ -16,7 +17,6 @@ function useCountUp(target, duration = 1000, start = true) {
       const progress = timestamp - startTime;
       const rate = Math.min(progress / duration, 1);
       
-      // Easing function outQuad
       const easedRate = rate * (2 - rate);
       const current = Math.floor(easedRate * target);
       setCount(current);
@@ -34,15 +34,51 @@ function useCountUp(target, duration = 1000, start = true) {
   return count;
 }
 
-function StatsCards({ activeCams = 24, alertsCount = 8, intrusionsCount = 2, accuracy = 98 }) {
-  const camsCountVal = useCountUp(activeCams, 1200);
-  const alertsCountVal = useCountUp(alertsCount, 1200);
-  const intrusionsCountVal = useCountUp(intrusionsCount, 1200);
-  const accuracyVal = useCountUp(accuracy, 1500);
+// Skeleton layout for stats card
+function StatSkeleton() {
+  return (
+    <div className="skeleton-card">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="skeleton skeleton-text" style={{ width: "50%" }} />
+        <div className="skeleton skeleton-circle" style={{ width: "24px", height: "24px" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "20px" }}>
+        <div style={{ width: "60%" }}>
+          <div className="skeleton skeleton-title" style={{ height: "28px", width: "80%", marginBottom: "5px" }} />
+          <div className="skeleton skeleton-text" style={{ width: "60%" }} />
+        </div>
+        <div className="skeleton" style={{ width: "50px", height: "25px" }} />
+      </div>
+    </div>
+  );
+}
 
-  // Sparklines points definition
+function StatsCards() {
+  const { stats, loading } = useDashboard();
+  
+  const activeCams = stats?.activeCameras ?? 0;
+  const alertsCount = stats?.activeAlerts ?? 0;
+  const intrusionsCount = stats?.intrusions ?? 0;
+  const accuracy = stats?.accuracy ?? 98;
+
+  const camsCountVal = useCountUp(activeCams, 1000, !loading);
+  const alertsCountVal = useCountUp(alertsCount, 1000, !loading);
+  const intrusionsCountVal = useCountUp(intrusionsCount, 1000, !loading);
+  const accuracyVal = useCountUp(accuracy, 1200, !loading);
+
   const sparklineData1 = "M 0 25 Q 15 5, 30 20 T 60 10 T 80 15";
   const sparklineData2 = "M 0 30 Q 10 30, 20 15 T 45 28 T 65 8 T 80 20";
+
+  if (loading) {
+    return (
+      <div className="stats-grid">
+        <StatSkeleton />
+        <StatSkeleton />
+        <StatSkeleton />
+        <StatSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="stats-grid">
@@ -62,7 +98,7 @@ function StatsCards({ activeCams = 24, alertsCount = 8, intrusionsCount = 2, acc
         </div>
         <div className="stat-body">
           <div className="stat-value-container">
-            <span className="stat-value">{camsCountVal} / 24</span>
+            <span className="stat-value">{camsCountVal} / 4</span>
             <span className="stat-trend up">Online (100%)</span>
           </div>
           <svg className="stat-sparkline" viewBox="0 0 80 30">
@@ -87,14 +123,14 @@ function StatsCards({ activeCams = 24, alertsCount = 8, intrusionsCount = 2, acc
       >
         <div className="stat-header">
           <span className="stat-title">AI System Alerts</span>
-          <div className="stat-icon alert-active">
+          <div className={`stat-icon ${alertsCount > 0 ? "alert-active" : ""}`}>
             <FiBell />
           </div>
         </div>
         <div className="stat-body">
           <div className="stat-value-container">
             <span className="stat-value">{alertsCountVal}</span>
-            <span className="stat-trend down">+2 compared to last hr</span>
+            <span className="stat-trend down">{alertsCount > 0 ? `+${alertsCount} active alarms` : "Zero pending"}</span>
           </div>
           <svg className="stat-sparkline" viewBox="0 0 80 30">
             <motion.path 
@@ -117,7 +153,7 @@ function StatsCards({ activeCams = 24, alertsCount = 8, intrusionsCount = 2, acc
         transition={{ duration: 0.4, delay: 0.15 }}
       >
         <div className="stat-header">
-          <span className="stat-title">Border Intrusions</span>
+          <span className="stat-title">Intrusions Log</span>
           <div className={`stat-icon ${intrusionsCount > 0 ? "danger-active" : ""}`}>
             <FiAlertCircle />
           </div>
@@ -128,7 +164,7 @@ function StatsCards({ activeCams = 24, alertsCount = 8, intrusionsCount = 2, acc
               {intrusionsCountVal}
             </span>
             <span className="stat-trend" style={{ color: intrusionsCount > 0 ? "var(--danger)" : "var(--success)" }}>
-              {intrusionsCount > 0 ? "⚠️ Critical Incidents" : "All Sectors Clear"}
+              {intrusionsCount > 0 ? "⚠️ Critical Breaches" : "All Clear"}
             </span>
           </div>
           <div style={{ fontSize: "24px", color: intrusionsCount > 0 ? "var(--danger)" : "var(--success)" }}>

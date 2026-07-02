@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { FiSearch, FiBell, FiSun, FiMoon, FiChevronDown, FiUser } from "react-icons/fi";
+import { ThemeContext } from "../context/ThemeContext";
+import { useDashboard } from "../hooks/useDashboard";
 import "./Navbar.css";
 
-function Navbar({ isDarkMode, toggleTheme }) {
+function Navbar() {
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { bellCount, resetBell } = useDashboard();
   const [time, setTime] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      // Format like: "02 JUL 2026 - 15:10:45 UTC"
-      const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
       const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
       
       const day = String(now.getDate()).padStart(2, "0");
@@ -62,9 +64,13 @@ function Navbar({ isDarkMode, toggleTheme }) {
         </button>
 
         {/* Alerts Bell */}
-        <button className="navbar-btn" title="View critical alerts">
+        <button 
+          className="navbar-btn" 
+          onClick={resetBell}
+          title="View critical alerts"
+        >
           <FiBell />
-          <span className="btn-badge">4</span>
+          {bellCount > 0 && <span className="btn-badge">{bellCount}</span>}
         </button>
 
         {/* Commander Dropdown */}

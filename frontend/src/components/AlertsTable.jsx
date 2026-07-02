@@ -1,76 +1,71 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAlerts } from "../hooks/useAlerts";
 import "./AlertsTable.css";
 
-// Initial mock data following the new Phase 6 specifications
-const mockDetections = [
-  { id: 104, object: "Person", confidence: "98%", time: "10:30 AM", status: "High" },
-  { id: 103, object: "Drone", confidence: "95%", time: "10:28 AM", status: "High" },
-  { id: 102, object: "Car", confidence: "92%", time: "10:25 AM", status: "Medium" },
-  { id: 101, object: "Cat", confidence: "87%", time: "10:20 AM", status: "Low" }
-];
+// Loading Skeleton for Alerts Table
+function TableSkeleton() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      {[1, 2, 3, 4].map(i => (
+        <div key={i} className="skeleton" style={{ height: "40px", width: "100%", borderRadius: "6px" }} />
+      ))}
+    </div>
+  );
+}
 
 function AlertsTable() {
+  const { alerts, loading, error, updateAlertStatus } = useAlerts();
   const [filter, setFilter] = useState("all");
-  const [detections, setDetections] = useState(mockDetections);
 
-  // Polling backend API (Node server on port 5000)
-  useEffect(() => {
-    const fetchDetections = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/detections");
-        if (response.ok) {
-          const data = await response.json();
-          
-          if (data && data.length > 0) {
-            // Map Flask detections to Phase 6 UI columns structure
-            const mapped = data.map((item, index) => {
-              const objClass = item.class || "Unknown";
-              const capitalizedObj = objClass.charAt(0).toUpperCase() + objClass.slice(1);
-              
-              // Map class to Threat status (High, Medium, Low)
-              let status = "Low";
-              const clsLower = objClass.toLowerCase();
-              if (["person", "drone", "unknown object"].includes(clsLower)) {
-                status = "High";
-              } else if (["car", "bus", "truck", "motorcycle", "bicycle"].includes(clsLower)) {
-                status = "Medium";
-              }
+  const handleResolve = async (id) => {
+    try {
+      await updateAlertStatus(id, "resolved");
+    } catch (err) {
+      console.error("Failed to resolve alert:", err);
+    }
+  };
 
-              // Format date timestamp to e.g. "10:30 AM"
-              let formattedTime = "10:30 AM";
-              try {
-                const date = new Date(item.time);
-                formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-              } catch (e) {
-                console.error("Time parsing error:", e);
-              }
+  if (loading && alerts.length === 0) {
+    return (
+      <div className="glass-pane alerts-card">
+        <h2 className="alerts-title" style={{ marginBottom: "15px" }}>Surveillance Incident Database</h2>
+        <TableSkeleton />
+      </div>
+    );
+  }
 
-              return {
-                id: 101 + index,
-                object: capitalizedObj,
-                confidence: `${Math.round(item.confidence * 100)}%`,
-                time: formattedTime,
-                status: status
-              };
-            });
-            // Reverse so latest detections show first
-            setDetections(mapped.reverse());
-          }
-        }
-      } catch (err) {
-        console.warn("Express backend offline. Running in local simulation mode.");
-      }
+  // Format dynamic alerts to fit Phase 6 layout structures
+  const formattedAlerts = alerts.map((alert, index) => {
+    const objClass = alert.object || "Target";
+    const capitalizedObj = objClass.charAt(0).toUpperCase() + objClass.slice(1);
+    
+    // Map threat level
+    let status = alert.threatLevel || "Low";
+    
+    // Format timestamp
+    let formattedTime = "12:00 PM";
+    try {
+      const date = new Date(alert.time);
+      formattedTime = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch (e) {
+      console.error(e);
+    }
+
+    return {
+      _id: alert._id,
+      id: 101 + index,
+      object: capitalizedObj,
+      confidence: `${Math.round(alert.confidence * 100)}%`,
+      time: formattedTime,
+      status: status,
+      rawStatus: alert.status // "critical", "pending", "resolved"
     };
+  });
 
-    fetchDetections();
-    const interval = setInterval(fetchDetections, 2000); // Poll every 2 seconds
-    return () => clearInterval(interval);
-  }, []);
-
-  const filteredDetections = filter === "all" 
-    ? detections 
-    : detections.filter(d => d.status.toLowerCase() === filter.toLowerCase());
+  const filteredAlerts = filter === "all"
+    ? formattedAlerts
+    : formattedAlerts.filter(a => a.status.toLowerCase() === filter.toLowerCase());
 
   return (
     <motion.div 
@@ -109,6 +104,12 @@ function AlertsTable() {
         </div>
       </div>
 
+      {error && (
+        <div style={{ color: "var(--danger)", fontSize: "11px", marginBottom: "10px", fontFamily: "monospace" }}>
+          ⚠️ connection lost: display offline logs
+        </div>
+      )}
+
       <div className="table-container">
         <table className="cyber-table">
           <thead>
@@ -118,13 +119,14 @@ function AlertsTable() {
               <th>Confidence</th>
               <th>Time</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             <AnimatePresence mode="popLayout">
-              {filteredDetections.map((item) => (
+              {filteredAlerts.map((item) => (
                 <motion.tr 
-                  key={item.id}
+                  key={item._id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 10 }}
@@ -141,8 +143,47 @@ function AlertsTable() {
                       {item.status}
                     </span>
                   </td>
+                  <td>
+                    {item.rawStatus !== "resolved" ? (
+                      <button 
+                        onClick={() => handleResolve(item._id)}
+                        style={{
+                          background: "rgba(0, 210, 106, 0.15)",
+                          border: "1px solid var(--success)",
+                          color: "var(--success)",
+                          fontSize: "10px",
+                          fontWeight: "600",
+                          padding: "3px 8px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          transition: "0.2s"
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = "var(--success)";
+                          e.target.style.color = "#000";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = "rgba(0, 210, 106, 0.15)";
+                          e.target.style.color = "var(--success)";
+                        }}
+                      >
+                        Resolve
+                      </button>
+                    ) : (
+                      <span style={{ fontSize: "10px", color: "var(--text-muted)", fontWeight: "500" }}>
+                        Logged
+                      </span>
+                    )}
+                  </td>
                 </motion.tr>
               ))}
+              {filteredAlerts.length === 0 && (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "12px" }}>
+                    No incident reports logged. Sector is clear.
+                  </td>
+                </tr>
+              )}
             </AnimatePresence>
           </tbody>
         </table>

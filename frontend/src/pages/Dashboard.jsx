@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
@@ -10,11 +10,17 @@ import Analytics from "../components/Analytics";
 import BorderMap from "../components/BorderMap";
 import DetectionCards from "../components/DetectionCards";
 import Footer from "../components/Footer";
+import Timeline from "../components/Timeline";
+import NotificationPanel from "../components/NotificationPanel";
+import { ThemeContext } from "../context/ThemeContext";
+import { useDashboard } from "../hooks/useDashboard";
+import { AnimatePresence, motion } from "framer-motion";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const { isDarkMode } = useContext(ThemeContext);
+  const { error, toasts, clearToast, refetch, alerts } = useDashboard();
   const [isEmergencyMode, setEmergencyMode] = useState(false);
 
   // Settings states
@@ -55,18 +61,83 @@ function Dashboard() {
     }
   }, [logs]);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
   // Handler to scroll or focus camera
   const handleViewCameras = () => {
     setActiveTab("cameras");
   };
 
+  // CSV Report Generator (Phase Reports)
+  const handleExportCSV = () => {
+    if (!alerts || alerts.length === 0) {
+      alert("No telemetry records available to export.");
+      return;
+    }
+    
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "ID,Object,Confidence,Time,Threat Level,Status\n";
+    
+    alerts.forEach((alert, index) => {
+      const obj = alert.object;
+      const conf = `${Math.round(alert.confidence * 100)}%`;
+      const timeStr = new Date(alert.time).toISOString();
+      const level = alert.threatLevel || "Medium";
+      const status = alert.status || "Pending";
+      csvContent += `${101 + index},${obj},${conf},${timeStr},${level},${status}\n`;
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `sentinelai_surveillance_log_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // PDF Report Trigger
+  const handleExportPDF = () => {
+    window.print();
+  };
+
+  // Full-Screen Connection Error page (Database failure fallback)
+  if (error) {
+    return (
+      <div className={`dashboard-layout ${isDarkMode ? "theme-dark" : "theme-light"}`} style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "var(--bg-gradient)" }}>
+        <div className="digital-grid" />
+        <motion.div 
+          className="glass-pane"
+          style={{
+            maxWidth: "500px",
+            padding: "40px",
+            textAlign: "center",
+            border: "1px solid var(--danger)",
+            boxShadow: "0 0 30px rgba(255, 77, 109, 0.25)"
+          }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div style={{ fontSize: "64px", marginBottom: "20px" }}>🛡️</div>
+          <h2 style={{ color: "var(--danger)", fontSize: "22px", fontWeight: "700", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+            SentinelAI Core Offline
+          </h2>
+          <p style={{ color: "var(--text-main)", fontSize: "14px", lineHeight: "1.6", marginBottom: "24px" }}>
+            Database connection with Sector-Alpha core gateway failed. The Express API server on Port 5000 is currently unreachable.
+          </p>
+          <button 
+            className="cyber-btn cyber-btn-primary glow-pulse"
+            style={{ margin: "0 auto", padding: "12px 30px", background: "linear-gradient(90deg, var(--danger), #ff7b92)", border: "1px solid var(--danger)", boxShadow: "0 4px 15px rgba(255,77,109,0.3)" }}
+            onClick={refetch}
+          >
+            Retry Connection Link
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className={`dashboard-layout ${isDarkMode ? "theme-dark" : "theme-light"}`}>
-      {/* Futuristic Background Digital Grid */}
+      {/* Background Digital Grid */}
       <div className="digital-grid" />
 
       {/* Sidebar */}
@@ -74,7 +145,7 @@ function Dashboard() {
 
       {/* Main Command Console Content Area */}
       <div className="dashboard-main">
-        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <Navbar />
 
         <div className="dashboard-content">
           {/* Main Dashboard Cockpit Tab */}
@@ -86,12 +157,7 @@ function Dashboard() {
                 onViewCameras={handleViewCameras} 
               />
               
-              <StatsCards 
-                activeCams={24} 
-                alertsCount={isEmergencyMode ? 14 : 8} 
-                intrusionsCount={isEmergencyMode ? 3 : 2} 
-                accuracy={98.4} 
-              />
+              <StatsCards />
 
               <div className="dashboard-cam-status-grid">
                 <LiveCamera />
@@ -101,6 +167,12 @@ function Dashboard() {
               <div className="dashboard-row-primary">
                 <BorderMap isEmergencyMode={isEmergencyMode} />
                 <AlertsTable />
+              </div>
+
+              {/* Day 5 Timeline & Notification components */}
+              <div className="dashboard-row-primary">
+                <Timeline />
+                <NotificationPanel />
               </div>
 
               <div className="dashboard-full-row">
@@ -147,9 +219,45 @@ function Dashboard() {
 
           {activeTab === "reports" && (
             <div className="glass-pane" style={{ padding: "30px", minHeight: "500px", display: "flex", flexDirection: "column", gap: "20px" }}>
-              <h2 style={{ fontSize: "18px", color: "var(--primary)", borderBottom: "1px solid var(--card-border)", paddingBottom: "10px" }}>
-                SURVEILLANCE RADAR LIVE REPORT LOGGER
-              </h2>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--card-border)", paddingBottom: "10px" }}>
+                <h2 style={{ fontSize: "18px", color: "var(--primary)" }}>
+                  Surveillance System Analytics Reports
+                </h2>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button className="cyber-btn cyber-btn-primary" onClick={handleExportCSV}>
+                    Export CSV Report
+                  </button>
+                  <button className="cyber-btn" onClick={handleExportPDF}>
+                    Export PDF Summary
+                  </button>
+                </div>
+              </div>
+
+              {/* Dynamic Summary Cards inside reports tab */}
+              <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+                <div className="glass-pane" style={{ padding: "16px", borderRadius: "8px" }}>
+                  <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--text-muted)" }}>Total Events Tracked</span>
+                  <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--primary)", marginTop: "4px" }}>
+                    {alerts?.length || 0}
+                  </div>
+                </div>
+                <div className="glass-pane" style={{ padding: "16px", borderRadius: "8px" }}>
+                  <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--text-muted)" }}>Intrusion Accuracy</span>
+                  <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--success)", marginTop: "4px" }}>
+                    98.4%
+                  </div>
+                </div>
+                <div className="glass-pane" style={{ padding: "16px", borderRadius: "8px" }}>
+                  <span style={{ fontSize: "10px", textTransform: "uppercase", color: "var(--text-muted)" }}>Critical Unresolved Threats</span>
+                  <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--danger)", marginTop: "4px" }}>
+                    {alerts?.filter(a => a.status === "critical").length || 0}
+                  </div>
+                </div>
+              </div>
+
+              <h3 style={{ fontSize: "14px", color: "var(--primary)", marginTop: "10px" }}>
+                Surveillance Radar Live Telemetry Feed
+              </h3>
               <div style={{
                 flexGrow: 1,
                 background: "#02050b",
@@ -160,7 +268,7 @@ function Dashboard() {
                 fontSize: "12px",
                 color: "#00E5FF",
                 overflowY: "auto",
-                maxHeight: "380px",
+                maxHeight: "260px",
                 display: "flex",
                 flexDirection: "column",
                 gap: "8px"
@@ -173,8 +281,8 @@ function Dashboard() {
                 <div ref={terminalBottomRef} />
               </div>
               <button 
-                className="cyber-btn cyber-btn-primary" 
-                style={{ alignSelf: "flex-end" }} 
+                className="cyber-btn" 
+                style={{ alignSelf: "flex-end", color: "var(--danger)" }} 
                 onClick={() => setLogs(["[CLEARED] Telemetry logger buffer purged. Listening for new system telemetry..."])}
               >
                 Clear Log Buffer
@@ -257,6 +365,35 @@ function Dashboard() {
 
         <Footer />
       </div>
+
+      {/* Floating Animated Toast Container */}
+      <div className="toast-container">
+        <AnimatePresence>
+          {toasts.map(toast => (
+            <motion.div 
+              key={toast.id}
+              className={`toast-item threat-${toast.threatLevel.toLowerCase()}`}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="toast-header">
+                <span className={`toast-header ${toast.threatLevel.toLowerCase()}`}>
+                  ⚠️ {toast.threatLevel.toUpperCase()} alert
+                </span>
+                <button className="toast-close-btn" onClick={() => clearToast(toast.id)}>
+                  ✕
+                </button>
+              </div>
+              <div className="toast-message">
+                {toast.message}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
     </div>
   );
 }

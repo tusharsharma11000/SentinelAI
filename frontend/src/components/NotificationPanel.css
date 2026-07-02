@@ -1,0 +1,125 @@
+.notif-card {
+  padding: 24px;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 12px;
+}
+
+.notif-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.notif-filters {
+  display: flex;
+  gap: 6px;
+}
+
+.notif-filter-btn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--card-border);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 9px;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: 0.2s;
+}
+
+.notif-filter-btn.active {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: var(--sidebar-active);
+}
+
+.notif-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.notif-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.theme-light .notif-item {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.notif-item:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--primary);
+}
+
+.notif-item.unread {
+  border-left: 3px solid var(--primary);
+}
+
+.notif-item.unread.high {
+  border-left: 3px solid var(--danger);
+}
+
+.notif-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.notif-badge.high { color: var(--danger); }
+.notif-badge.system { color: var(--success); }
+.notif-badge.success { color: var(--primary); }
+.notif-badge.camera { color: var(--warning); }
+
+.notif-text {
+  font-size: 11px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.notif-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.notif-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.notif-action-btn:hover {
+  color: #fff;
+}
